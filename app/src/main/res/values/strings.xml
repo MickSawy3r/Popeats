@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Popeat</string>
+    <string name="venues_near_me">Venues Near Me</string>
+    <string name="request_location_permissions">Request Location Permissions</string>
+    <string name="acquiring_your_location_please_wait">Acquiring Your Location\nPlease Wait</string>
+    <string name="km">KM</string>
+    <string name="error_navigation_mode_is_not_active">Error! Navigation Mode is Not Active</string>
+</resources>

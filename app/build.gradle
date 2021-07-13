@@ -1,0 +1,256 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+    id "de.mannodermaus.android-junit5"
+    id 'com.google.secrets_gradle_plugin' version '0.6'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+}
+
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    configurations.all {
+        resolutionStrategy {
+            force 'androidx.test:monitor:1.4.0-alpha06'
+        }
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true
+        }
+    }
+
+    defaultConfig {
+        applicationId "de.sixbits.popeat"
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "de.sixbits.popeat.CustomTestRunner"
+
+        buildConfigField "String", "FOURSQUARE_BASE_URL", "\"https://api.foursquare.com/v2/\""
+    }
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildFeatures {
+        viewBinding true
+        dataBinding true
+    }
+    sourceSets {
+        String sharedTestDir = 'src/sharedTest/java'
+        test {
+            assets.srcDirs = ['src/test/assets']
+            java.srcDirs += sharedTestDir
+        }
+        androidTest {
+            assets.srcDirs = ['src/androidTest/assets']
+            java.srcDirs += sharedTestDir
+        }
+    }
+}
+
+kapt {
+    correctErrorTypes true
+}
+
+hilt {
+    enableTransformForLocalTests = true
+}
+
+dependencies {
+    def retrofit_version = '2.9.0'
+    def okHttp_version = "4.9.1"
+    def rx_java_version = "3.0.13"
+    def rx_android_version = "3.0.0"
+    def retrofit_rx_adapter_version = "3.0.0"
+    def glide_version = "4.12.0"
+    def junit5_version ="5.7.1"
+    def junit4_version = "4.13.2"
+    def mockito_version = "3.9.0"
+    def cucumber_version = "6.10.2"
+    def material_version = "1.4.0"
+    def constraint_layout_version = "2.0.4"
+    def app_compat_version = "1.3.0"
+    def ktx_version = "1.6.0"
+    def coroutines_test_version = "1.5.0"
+    def coroutines_version = "1.4.1"
+    def truth_version = "1.1.2"
+    def lifecycle_version = "2.3.1"
+    def lifecycle_extensions_version = "2.2.0"
+    def leakcanary_version = "2.7"
+    def androidx_test_version = "1.3.0"
+    def hamcrest_version = "1.3"
+    def espresso_version = "3.4.0"
+    def ui_automator_version = "2.2.0"
+    def multidex_version = "2.0.1"
+    def lottie_version = "3.7.0"
+    def robolectric_version = "4.4"
+    def maps_version = "17.0.1"
+    def location_version = "18.0.0"
+    def firebase_version = "28.2.0"
+
+    implementation platform("com.google.firebase:firebase-bom:$firebase_version")
+
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+
+    // region Lifecycle components
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_extensions_version"
+    // endregion
+
+    // region Networking
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okHttp_version"
+    // endregion
+
+    // region Kotlin libs
+    // implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "androidx.core:core-ktx:$ktx_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version"
+    // endregion
+
+    // region Glide
+    implementation "com.github.bumptech.glide:glide:$glide_version"
+    implementation("com.github.bumptech.glide:recyclerview-integration:$glide_version") {
+        transitive = false
+    }
+    // endregion
+
+    // region Rx
+    implementation "io.reactivex.rxjava3:rxandroid:$rx_android_version"
+    implementation "io.reactivex.rxjava3:rxjava:$rx_java_version"
+    implementation "com.github.akarnokd:rxjava3-retrofit-adapter:$retrofit_rx_adapter_version"
+    // endregion
+
+    // region Material Design libs
+    implementation "androidx.appcompat:appcompat:$app_compat_version"
+    implementation "androidx.constraintlayout:constraintlayout:$constraint_layout_version"
+    implementation "androidx.recyclerview:recyclerview:1.2.1"
+    implementation "com.google.android.material:material:$material_version"
+    // endregion
+
+    // region Hilt
+    implementation 'com.google.dagger:hilt-android:2.37'
+    kapt 'com.google.dagger:hilt-compiler:2.37'
+
+    // For instrumentation tests
+    androidTestImplementation  'com.google.dagger:hilt-android-testing:2.37'
+    kaptAndroidTest 'com.google.dagger:hilt-compiler:2.37'
+
+    // For local unit tests
+    testImplementation 'com.google.dagger:hilt-android-testing:2.37'
+    kaptTest 'com.google.dagger:hilt-compiler:2.37'
+
+    // region mock services
+    testImplementation "com.squareup.okhttp3:mockwebserver:$okHttp_version"
+    testImplementation "org.mockito:mockito-core:$mockito_version"
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
+    testImplementation "org.mockito.kotlin:mockito-kotlin:3.1.0"
+
+    androidTestImplementation "com.squareup.okhttp3:mockwebserver:$okHttp_version"
+    androidTestImplementation "org.mockito:mockito-android:$mockito_version"
+    // endregion
+
+    // region Truths
+    testImplementation "com.google.truth:truth:$truth_version"
+    // endregion
+
+    // region Junit libs, I shall be using JUnit 5
+    // (Required) Writing and executing Unit Tests on the JUnit Platform
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit5_version"
+    testImplementation "org.mockito:mockito-junit-jupiter:$mockito_version"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit5_version"
+
+    // (Optional) If you need "Parameterized Tests"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$junit5_version"
+
+    // (Optional) If you also have JUnit 4-based tests
+    testImplementation("junit:junit:$junit4_version")
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:$junit5_version")
+    // endregion
+
+    // region JVM Integration testing with BDD and Cucumber
+    testImplementation "io.cucumber:cucumber-java8:$cucumber_version"
+    testImplementation "io.cucumber:cucumber-junit:$cucumber_version"
+    // endregion
+
+    // region Leak Canary
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
+    // endregion
+
+    // region Android Tester
+    androidTestImplementation "androidx.test.ext:junit:1.1.3"
+    androidTestImplementation "androidx.test:core:$androidx_test_version"
+    androidTestImplementation "androidx.test:core-ktx:$androidx_test_version"
+    androidTestImplementation "androidx.test:runner:$androidx_test_version"
+    androidTestImplementation "androidx.test:rules:$androidx_test_version"
+    androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
+
+    testImplementation "androidx.arch.core:core-testing:2.1.0"
+    // endregion
+
+    // region AndroidX Test Extensions
+    androidTestImplementation "org.hamcrest:hamcrest-library:$hamcrest_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espresso_version"
+    implementation "androidx.test.espresso:espresso-idling-resource:$espresso_version"
+    androidTestImplementation "androidx.test.uiautomator:uiautomator:$ui_automator_version"
+    // endregion
+
+    // region Robolectric
+    testImplementation "org.robolectric:robolectric:$robolectric_version"
+    // endregion
+
+    // Multidex
+    implementation "androidx.multidex:multidex:$multidex_version"
+
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+
+    implementation "com.airbnb.android:lottie:$lottie_version"
+
+    implementation "com.google.android.gms:play-services-maps:$maps_version"
+    implementation "com.google.android.gms:play-services-location:$location_version"
+
+    implementation "androidx.fragment:fragment-ktx:1.3.5"
+
+    def fragment_version = "1.3.5"
+    debugImplementation("androidx.fragment:fragment-testing:$fragment_version")
+}

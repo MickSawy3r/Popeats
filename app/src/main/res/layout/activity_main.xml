@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data/>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.main.MainActivity">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/home_root"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@id/fragment_container_venue_list"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/fragment_container_map"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/fragment_container_navigation_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </FrameLayout>
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fragment_container_venue_list"
+                android:layout_width="match_parent"
+                android:layout_height="260dp"
+                app:layout_constraintBottom_toBottomOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/container_home"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+</layout>
